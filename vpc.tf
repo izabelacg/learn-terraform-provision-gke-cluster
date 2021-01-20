@@ -6,6 +6,10 @@ variable "region" {
   description = "region"
 }
 
+variable "k8s_min_master_version" {
+  description = "kubernetes minimum cluster version"
+}
+
 provider "google" {
   project = var.project_id
   region  = var.region

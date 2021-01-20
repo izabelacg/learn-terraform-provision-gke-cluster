@@ -13,11 +13,22 @@ variable "gke_num_nodes" {
   description = "number of gke nodes"
 }
 
+# From: https://registry.terraform.io/providers/hashicorp/google/latest/docs/data-sources/container_engine_versions
+data "google_container_engine_versions" "default_region" {
+  provider       = google-beta
+  location       = var.region
+  version_prefix = var.k8s_min_master_version
+  project        = var.project_id
+}
+
+
 # GKE cluster
 resource "google_container_cluster" "primary" {
   name     = "${var.project_id}-gke"
   location = var.region
 
+  min_master_version       = data.google_container_engine_versions.default_region.latest_master_version
+  node_version             = data.google_container_engine_versions.default_region.latest_master_version
   remove_default_node_pool = true
   initial_node_count       = 1
 
